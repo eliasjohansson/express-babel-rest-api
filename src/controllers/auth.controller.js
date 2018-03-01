@@ -1,7 +1,4 @@
-// import httpStatus from 'http-status'
 import User from '../models/user.model'
-// import UserController from './user.controller'
-// import httpStatus from 'http-status'
 import moment from 'moment-timezone'
 import jwt from 'jwt-simple'
 import { jwtSecret } from '../config/dotenv'
@@ -28,7 +25,30 @@ controller.register = (req, res) => {
 }
 
 controller.login = (req, res) => {
+  const { password, email } = req.body
 
+  User.findOne({ email: email }).select('+password')
+    .then(async (user) => {
+      if (await user.comparePasswords(password)) {
+        return res.json({
+          token: createToken(user._id),
+          user: user.transform()
+        })
+      } else {
+        return res.json({err: true, msg: 'Passwords did not match.'})
+      }
+    })
+    .catch(err => {
+      return res.json(err)
+    })
+}
+
+const createToken = userId => {
+  const token = jwt.encode(userId, jwtSecret, 'HS256', {
+    iat: moment().unix(),
+    exp: moment().add(1, 'hours').unix()
+  })
+  return token
 }
 
 export default controller

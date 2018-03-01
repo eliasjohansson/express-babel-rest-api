@@ -46,14 +46,8 @@ userSchema.pre('save', function (next) {
 })
 
 userSchema.method({
-  comparePasswords (password, next) {
-    bcrypt.compare(password, this.password, function (err, res) {
-      if (err) {
-        next(err)
-      } else {
-        next()
-      }
-    })
+  async comparePasswords (password) {
+    return bcrypt.compare(password, this.password)
   },
   transform () {
     var obj = this.toObject()

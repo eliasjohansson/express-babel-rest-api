@@ -28,7 +28,8 @@
     "http-status": "^1.0.1",
     "jwt-simple": "^0.5.1",
     "moment-timezone": "^0.5.14",
-    "mongoose": "^4.13.7"
+    "mongoose": "^4.13.7",
+    "passport-jwt": "^3.0.1"
   },
   "devDependencies": {
     "babel-cli": "^6.26.0",
