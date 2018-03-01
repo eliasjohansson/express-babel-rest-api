@@ -1,23 +1,28 @@
-// import httpStatus from 'http-status'
+import httpStatus from 'http-status'
 import User from '../models/user.model'
 
 const controller = {
 
-  async getOne (req, res) {
+  async getById (req, res) {
     try {
-      const user = await User.findOne({ '_id': req.params.userId }).exec()
-      return user.transform()
+      const user = await User.findById(req.params.userId).exec()
+      return res.json(user.transform())
     } catch (err) {
-      return res.json({ err: true, msg: 'User could not be found.' })
+      res.status(httpStatus.NOT_FOUND).json('No user found.')
     }
   },
 
-  async getAll (req, res) {
+  async me (req, res) {
+    return res.send('me') // TODO
+  },
+
+  async list (req, res) {
     try {
       const users = await User.find().exec()
       return res.json(users)
     } catch (err) {
-      return res.json({ err: true, msg: err.msg })
+      res.status(httpStatus.NOT_FOUND)
+      return res.json({ message: 'No users found.' })
     }
   }
 }

@@ -1,5 +1,6 @@
 import User from '../models/user.model'
 import moment from 'moment-timezone'
+import httpStatus from 'http-status'
 import jwt from 'jwt-simple'
 import { jwtSecret } from '../config/dotenv'
 
@@ -13,7 +14,7 @@ const controller = {
     })
 
     user.save((err, user) => {
-      if (err) return res.send(err)
+      if (err) return res.status(httpStatus.BAD_REQUEST).json('Could not create user.')
 
       const token = jwt.encode(user._id, jwtSecret, 'HS256', {
         iat: moment().unix(),
@@ -31,7 +32,8 @@ const controller = {
       if (await user.comparePasswords(password)) {
         return res.json({ token: createToken(user._id), user: user.transform() })
       } else {
-        return res.json({ err: true, msg: 'Passwords did not match.' })
+        res.status(httpStatus.BAD_REQUEST)
+        return res.json({ message: 'Passwords did not match.' })
       }
     } catch (err) {
       return res.json(err)
