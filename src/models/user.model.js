@@ -1,9 +1,11 @@
 import mongoose from 'mongoose'
 import bcrypt from 'bcryptjs'
+/*
 import httpStatus from 'http-status'
 import moment from 'moment-timezone'
 import jwt from 'jwt-simple'
 import { jwtSecret, jwtExpMin } from '../config/dotenv'
+*/
 
 const userSchema = new mongoose.Schema({
   email: {
@@ -22,7 +24,8 @@ const userSchema = new mongoose.Schema({
     type: String,
     required: true,
     minlength: 6,
-    maxlength: 128
+    maxlength: 128,
+    select: false
   }
 }, {
   timestamps: true
@@ -52,7 +55,7 @@ userSchema.method({
       }
     })
   },
-  toJSON () {
+  transform () {
     var obj = this.toObject()
     delete obj.password
     return obj

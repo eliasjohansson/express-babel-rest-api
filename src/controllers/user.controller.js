@@ -3,13 +3,23 @@ import User from '../models/user.model'
 
 const controller = {}
 
-controller.get = (req, res) => {
-  User.findOne({ 'id': req.id })
+controller.getOne = (req, res) => {
+  User.findOne({ '_id': req.params.userId })
     .then(user => {
-      res.json(user.toJSON())
+      res.json(user.transform())
     })
     .catch(err => {
       res.json(err)
+    })
+}
+
+controller.getAll = (req, res) => {
+  User.find()
+    .then(users => {
+      return res.json(users)
+    })
+    .catch(err => {
+      return res.json(err)
     })
 }
 

@@ -3,9 +3,10 @@ import controller from '../controllers/user.controller'
 
 const router = express.Router()
 
-router
-  .route('/:userId')
+router.route('/')
+  .get(controller.getAll)
 
-  .get(controller.get)
+router.route('/:userId')
+  .get(controller.getOne)
 
 export default router
