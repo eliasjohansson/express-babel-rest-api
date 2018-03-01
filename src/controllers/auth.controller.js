@@ -3,44 +3,40 @@ import moment from 'moment-timezone'
 import jwt from 'jwt-simple'
 import { jwtSecret } from '../config/dotenv'
 
-const controller = {}
+const controller = {
 
-controller.register = (req, res) => {
-  const user = new User({
-    email: req.body.email,
-    username: req.body.username,
-    password: req.body.password
-  })
-
-  user.save((err, user) => {
-    if (err) return res.send(err)
-
-    const token = jwt.encode(user._id, jwtSecret, 'HS256', {
-      iat: moment().unix(),
-      exp: moment().add(1, 'hours').unix()
+  register (req, res) {
+    const user = new User({
+      email: req.body.email,
+      username: req.body.username,
+      password: req.body.password
     })
 
-    return res.json({ user: user.transform(), token: token })
-  })
-}
+    user.save((err, user) => {
+      if (err) return res.send(err)
 
-controller.login = (req, res) => {
-  const { password, email } = req.body
+      const token = jwt.encode(user._id, jwtSecret, 'HS256', {
+        iat: moment().unix(),
+        exp: moment().add(1, 'hours').unix()
+      })
 
-  User.findOne({ email: email }).select('+password')
-    .then(async (user) => {
+      return res.json({ user: user.transform(), token: token })
+    })
+  },
+
+  async login (req, res) {
+    const { password, email } = req.body
+    try {
+      const user = await User.findOne({ email: email }).select('+password').exec()
       if (await user.comparePasswords(password)) {
-        return res.json({
-          token: createToken(user._id),
-          user: user.transform()
-        })
+        return res.json({ token: createToken(user._id), user: user.transform() })
       } else {
-        return res.json({err: true, msg: 'Passwords did not match.'})
+        return res.json({ err: true, msg: 'Passwords did not match.' })
       }
-    })
-    .catch(err => {
+    } catch (err) {
       return res.json(err)
-    })
+    }
+  }
 }
 
 const createToken = userId => {

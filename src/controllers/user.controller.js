@@ -1,37 +1,25 @@
 // import httpStatus from 'http-status'
 import User from '../models/user.model'
 
-const controller = {}
+const controller = {
 
-controller.getOne = (req, res) => {
-  User.findOne({ '_id': req.params.userId })
-    .then(user => {
-      res.json(user.transform())
-    })
-    .catch(err => {
-      res.json(err)
-    })
-}
+  async getOne (req, res) {
+    try {
+      const user = await User.findOne({ '_id': req.params.userId }).exec()
+      return user.transform()
+    } catch (err) {
+      return res.json({ err: true, msg: 'User could not be found.' })
+    }
+  },
 
-controller.getAll = (req, res) => {
-  User.find()
-    .then(users => {
+  async getAll (req, res) {
+    try {
+      const users = await User.find().exec()
       return res.json(users)
-    })
-    .catch(err => {
-      return res.json(err)
-    })
-}
-
-/* controller.create = async (req, res, next) => {
-  try {
-    const user = new User(req.body)
-    const savedUser = await user.save()
-    res.status(httpStatus.CREATED)
-    res.json(savedUser.transform())
-  } catch (err) {
-    res.send(err)
+    } catch (err) {
+      return res.json({ err: true, msg: err.msg })
+    }
   }
-} */
+}
 
 export default controller
