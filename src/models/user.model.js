@@ -1,11 +1,5 @@
 import mongoose from 'mongoose'
 import bcrypt from 'bcryptjs'
-/*
-import httpStatus from 'http-status'
-import moment from 'moment-timezone'
-import jwt from 'jwt-simple'
-import { jwtSecret, jwtExpMin } from '../config/dotenv'
-*/
 
 const userSchema = new mongoose.Schema({
   email: {
@@ -53,8 +47,24 @@ userSchema.method({
     var obj = this.toObject()
     delete obj.password
     return obj
-  },
-  toAuthJSON () {}
+  }
 })
+
+userSchema.statics = {
+  async get (id) {
+    try {
+      let user
+      if (mongoose.Types.ObjectId.isValid(id)) {
+        user = await this.findById(id).exec()
+      }
+
+      if (user) return user
+
+      return new Error('Could not find user.')
+    } catch (error) {
+      throw error
+    }
+  }
+}
 
 export default mongoose.model('User', userSchema)

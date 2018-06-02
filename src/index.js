@@ -1,7 +1,11 @@
+import http from 'http'
 import app from './config/express'
 import { port } from './config/dotenv'
 import mongoose from './config/mongoose'
 
-mongoose.connect()
+export const server = http.Server(app)
 
-app.listen(port, () => console.log(`Server started on http://localhost:${port}`))
+server.listen(port, () => {
+  console.log(`Server started on http://localhost:${port}`)
+  mongoose.connect()
+})

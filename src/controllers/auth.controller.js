@@ -6,6 +6,10 @@ import { jwtSecret } from '../config/dotenv'
 
 const controller = {
 
+  /**
+   * * /api/auth/register
+   */
+
   register (req, res) {
     const user = new User({
       email: req.body.email,
@@ -25,6 +29,10 @@ const controller = {
     })
   },
 
+  /**
+   * * /api/auth/login
+   */
+
   async login (req, res) {
     const { password, email } = req.body
     try {
@@ -36,7 +44,7 @@ const controller = {
         return res.json({ message: 'Passwords did not match.' })
       }
     } catch (err) {
-      return res.json(err)
+      return res.json('No user with that email found.')
     }
   }
 }

@@ -4,17 +4,15 @@ import passport from 'passport'
 
 const router = express.Router()
 
-/*
-  Auth Middleware:   passport.authenticate('jwt', {session: false})
-*/
+const protectedRoute = passport.authenticate('jwt', { session: false })
 
 router.route('/')
-  .get(passport.authenticate('jwt', {session: false}), controller.list)
+  .get(protectedRoute, controller.list)
 
 router.route('/me')
-  .get(controller.me)
+  .get(protectedRoute, controller.me)
 
 router.route('/:userId')
-  .get(controller.getById)
+  .get(protectedRoute, controller.getById)
 
 export default router

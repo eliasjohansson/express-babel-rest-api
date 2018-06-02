@@ -4,6 +4,7 @@ import morgan from 'morgan'
 import cors from 'cors'
 import passport from 'passport'
 import routes from '../routes'
+import './passport'
 
 Promise = require('bluebird') // eslint-disable-line no-global-assign
 
